@@ -1,0 +1,57 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model SubscriptionPlan {
+  createdAt     DateTime @default(now())
+  downloadLimit Int?
+  features      String?
+  id            String   @id @default(cuid())
+  name          String?
+  price         Float?
+  qualityLimit  String?
+  updatedAt     DateTime @updatedAt
+}
+
+model DownloadHistory {
+  createdAt    DateTime  @default(now())
+  downloadedAt DateTime?
+  id           String    @id @default(cuid())
+  quality      String?
+  updatedAt    DateTime  @updatedAt
+  user         User?     @relation(fields: [userId], references: [id])
+  userId       String?
+  videoUrl     String?
+}
+
+model Admin {
+  createdAt    DateTime @default(now())
+  email        String?
+  id           String   @id @default(cuid())
+  passwordHash String?
+  role         String?
+  updatedAt    DateTime @updatedAt
+  username     String?
+}
+
+model User {
+  createdAt         DateTime          @default(now())
+  downloadHistories DownloadHistory[]
+  email             String?           @unique
+  firstName         String?
+  hashedPassword    String?
+  id                String            @id @default(cuid())
+  lastName          String?
+  password          String
+  passwordHash      String?
+  role              String?
+  roles             Json
+  updatedAt         DateTime          @updatedAt
+  username          String            @unique
+  userRole          String?
+}
